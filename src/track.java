@@ -1,4 +1,4 @@
-public class track {
+public class track extends DAO {
     int id;
     String name, desc;
 
@@ -36,5 +36,22 @@ public class track {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public void Insert(){}
+
+    @Override
+    public track Select() {
+        return null;
+    }
+
+    @Override
+    public void Update() {
+
+    }
+
+    @Override
+    public void Delete() {
+
     }
 }
