@@ -1,6 +1,8 @@
 import java.sql.Connection;
 
 public abstract class DAO {
+
+
     public String getInsert() {
         StringBuffer sb = new StringBuffer("INSERT INTO ");
         sb.append(this.getClass().getSimpleName());
@@ -19,8 +21,10 @@ public abstract class DAO {
 
     }
 
-    public void select(){
 
+    public void select(String bdname){
+        StringBuffer sb = new StringBuffer("SELECT * FROM ");
+        sb.append(bdname);
     }
 
     public void update(){
