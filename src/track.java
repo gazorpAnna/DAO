@@ -38,20 +38,11 @@ public class track extends DAO {
         this.desc = desc;
     }
 
-    public void Insert(){}
 
-    @Override
-    public track Select() {
-        return null;
-    }
+    public static void main(String[] Args){
 
-    @Override
-    public void Update() {
-
-    }
-
-    @Override
-    public void Delete() {
-
+        track t1=new track();
+        track t2=new track(2,"abc","def");
+        t2.insert();
     }
 }

@@ -1,11 +1,34 @@
+import java.sql.Connection;
+
 public abstract class DAO {
+    public String getInsert() {
+        StringBuffer sb = new StringBuffer("INSERT INTO ");
+        sb.append(this.getClass().getSimpleName());
+        sb.append(" ");
+        return sb.toString();
+    }
 
-    public abstract void Insert();
+    public void insert()
+    {
+        String query = getInsert();
+        Connection c = getConnection();
+        c.prepareStatement(query);
+    }
 
-    public abstract track Select();
+    public Connection getConnection(){
 
-    public abstract void Update();
+    }
 
-    public abstract void Delete();
+    public void select(){
+
+    }
+
+    public void update(){
+
+    }
+
+    public void delete(){
+
+    }
 
 }
