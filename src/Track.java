@@ -1,14 +1,14 @@
-public class track extends DAO {
-    int id;
-    String name, desc;
+public class Track extends DAO {
+    public int id;
+    public String name, desc;
 
-    public track(){
+    public Track(){
         id = 1;
         name = "hola";
-        desc = "Descripción de la track";
+        desc = "Descripción de la Track";
     }
 
-    public track(int id, String name, String desc) {
+    public Track(int id, String name, String desc) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -39,10 +39,10 @@ public class track extends DAO {
     }
 
 
-    public static void main(String[] Args){
+    public static void main(String[] Args) throws Exception{
 
-        track t1=new track();
-        track t2=new track(2,"abc","def");
-        t2.insert();
+        Track t1=new Track();
+        Track t2=new Track(2,"abc","def");
+        t2.getInsert();
     }
 }
