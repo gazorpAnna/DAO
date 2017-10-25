@@ -30,7 +30,7 @@ public abstract class DAO {
         statement.setString(1, "bill");
         statement.setString(2, "secretpass");
         statement.setString(3, "Bill Gates");
-        statement.setString(4, "bill.gates@microsoft.com");
+
 
         int rowsInserted = statement.executeUpdate();*/
     }
@@ -53,17 +53,26 @@ public abstract class DAO {
         //sb.append(bdname);
     }
 
-    // UPDATE Track SET id=?, name=?, desc=? WHERE username=?
-    public void update(String[] datos,String id){
+    // UPDATE Track SET name=?, desc=? WHERE id=?
+    public void update(String idString, Object[] parametros){
         StringBuffer sb = new StringBuffer("UPDATE ");
         sb.append(this.getClass().getSimpleName()).append(" SET ");
-        for (String f:datos)
+        atributos = this.getClass().getFields();
+        for (Field f: atributos)
         {
-            sb.append(f).append(",");
+            if( f.getName() != idString)
+                sb.append(f.getName()).append("=?,");
         }
         sb.delete(sb.length()-1,sb.length());
         sb.append(" WHERE ");
-        sb.append(id);
+        sb.append(idString).append("=?");
+        System.out.println(sb);
+        /*reparedStatement statement = conn.prepareStatement(sql);
+        statement.setString(1, parametros);
+        statement.setString(2, );
+        statement.setString(3, "bill.gates@microsoft.com");
+        statement.setString(4, "bill");
+        */
 
     }
 
