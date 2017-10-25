@@ -40,16 +40,30 @@ public abstract class DAO {
     }*/
 
     // SELECT * FROM Track
-    public void select(String bdname){
-        StringBuffer sb = new StringBuffer("SELECT * FROM ");
+    public void select(String[] datos){
+        StringBuffer sb = new StringBuffer("SELECT ");
+        for (String f:datos)
+        {
+            sb.append(f).append(",");
+
+        }
+        sb.delete(sb.length()-1,sb.length());
+        sb.append(" FROM ");
         sb.append(this.getClass().getSimpleName());
         //sb.append(bdname);
     }
 
     // UPDATE Track SET id=?, name=?, desc=? WHERE username=?
-    public void update(){
+    public void update(String[] datos,String id){
         StringBuffer sb = new StringBuffer("UPDATE ");
         sb.append(this.getClass().getSimpleName()).append(" SET ");
+        for (String f:datos)
+        {
+            sb.append(f).append(",");
+        }
+        sb.delete(sb.length()-1,sb.length());
+        sb.append(" WHERE ");
+        sb.append(id);
 
     }
 
