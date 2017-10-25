@@ -44,6 +44,8 @@ public abstract class DAO {
                 }
             }
             int abc=j;
+            Object idp=metodos[j];//INVOKE ES LA CLAVE
+            int jajaja=2;
             //statement.setString(i+1, metodos[j] );
         }
         /*
