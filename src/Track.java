@@ -46,6 +46,7 @@ public class Track extends DAO {
         t2.getInsert();
         Object[] a = null;
         t2.update("id",a) ;
+        t2.insert();
 
     }
 }

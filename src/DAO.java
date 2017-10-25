@@ -1,4 +1,5 @@
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.text.Format;
 
@@ -26,7 +27,27 @@ public abstract class DAO {
         //String query = getInsert();
         //Connection c = getConnection();
         //c.prepareStatement(query);
+
+        for (int i=0;i<atributos.length;i++)
+        {
+            Method[] metodos=this.getClass().getMethods();
+            int j;
+            String ab="get"+atributos[i].getName().substring(0,1).toUpperCase()+atributos[i].getName().substring(1,atributos[i].getName().length());
+
+            for (j=0;j<metodos.length;j++)
+            {
+                //metodos.toString().con
+                String nombre=metodos[j].toString();
+                if (nombre.contains("get"+atributos[i].getName().substring(0,1).toUpperCase()+atributos[i].getName().substring(1,atributos[i].getName().length())))
+                {
+                    break;
+                }
+            }
+            int abc=j;
+            //statement.setString(i+1, metodos[j] );
+        }
         /*
+
         statement.setString(1, "bill");
         statement.setString(2, "secretpass");
         statement.setString(3, "Bill Gates");
