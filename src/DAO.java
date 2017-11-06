@@ -17,8 +17,14 @@ public abstract class DAO {
             sb.append(f.getName()).append(",");
         }
         sb.delete(sb.length()-1,sb.length());
-        sb.append(") VALUES (?,?,?)");
-        //System.out.println(sb);
+        sb.append(") VALUES (");
+        for (Field f:atributos) {
+            sb.append("?,");
+        }
+        sb.delete(sb.length()-1,sb.length());
+        sb.append(")");
+        //sb.append(") VALUES (?,?,?)");
+        System.out.println(sb);
         return sb.toString();
     }
 
