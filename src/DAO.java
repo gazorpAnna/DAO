@@ -1,4 +1,5 @@
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.text.Format;
@@ -28,12 +29,11 @@ public abstract class DAO {
         return sb.toString();
     }
 
-    public void insert()
-    {
+    public void insert() throws InvocationTargetException, IllegalAccessException {
         //String query = getInsert();
         //Connection c = getConnection();
         //c.prepareStatement(query);
-
+        Object[] cosasBonitas = new Object[atributos.length];
         for (int i=0;i<atributos.length;i++)
         {
             Method[] metodos=this.getClass().getMethods();
@@ -50,8 +50,8 @@ public abstract class DAO {
                 }
             }
             int abc=j;
-            Object idp=metodos[j];//INVOKE ES LA CLAVE
-            int jajaja=2;
+            cosasBonitas[i]= metodos[j].invoke(this,null);//INVOKE ES LA CLAVE
+            System.out.println(cosasBonitas[i].toString()+" ");
             //statement.setString(i+1, metodos[j] );
         }
         /*
