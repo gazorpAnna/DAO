@@ -41,10 +41,16 @@ public class Track extends DAO {
 
     public static void main(String[] Args) throws Exception{
 
-        Track t1=new Track();
+
+        Pepita t1=new Pepita(1,"ciao",false,1.3);
+        t1.getInsert();
+        Object[] a = null;
+        t1.update("co",a) ;
+        t1.insert();
+
         Track t2=new Track(2,"abc","def");
         t2.getInsert();
-        Object[] a = null;
+
         t2.update("id",a) ;
         t2.insert();
 
