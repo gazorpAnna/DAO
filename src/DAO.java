@@ -32,11 +32,12 @@ public abstract class DAO {
     public void insert() throws InvocationTargetException, IllegalAccessException {
         //String query = getInsert();
         //Connection c = getConnection();
+        //statement
         //c.prepareStatement(query);
+        Method[] metodos=this.getClass().getMethods();
         Object[] cosasBonitas = new Object[atributos.length];
         for (int i=0;i<atributos.length;i++)
         {
-            Method[] metodos=this.getClass().getMethods();
             int j;
             String ab="get"+atributos[i].getName().substring(0,1).toUpperCase()+atributos[i].getName().substring(1,atributos[i].getName().length());
 
@@ -51,11 +52,12 @@ public abstract class DAO {
             }
             int abc=j;
             cosasBonitas[i]= metodos[j].invoke(this,null);//INVOKE ES LA CLAVE
+
             System.out.println(cosasBonitas[i].toString()+" ");
             //statement.setString(i+1, metodos[j] );
         }
         /*
-
+        statement.set
         statement.setString(1, "bill");
         statement.setString(2, "secretpass");
         statement.setString(3, "Bill Gates");
