@@ -70,7 +70,7 @@ public abstract class DAO {
         return
     }*/
 
-    // SELECT * FROM Track
+    // SELECT * FROM Track WHERE id=?
     public void select(String[] datos){
         StringBuffer sb = new StringBuffer("SELECT ");
         for (String f:datos)
