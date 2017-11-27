@@ -16,7 +16,7 @@ public abstract class DAO {
     //INSERT INTO Track (id, name, desc) VALUES (?, ?, ?)
     public String getInsert() throws Exception{
         StringBuffer sb = new StringBuffer("INSERT INTO ");
-        sb.append(this.getClass().getSimpleName()).append(" ("); //Track
+        sb.append(this.getClass().getSimpleName().substring(0,1).toLowerCase()+this.getClass().getSimpleName().substring(1,this.getClass().getSimpleName().length())).append(" ("); //Track
         atributos = this.getClass().getFields();
         for (Field f:atributos) {
             sb.append(f.getName()).append(",");
@@ -60,9 +60,10 @@ public abstract class DAO {
 
             //System.out.println(cosasBonitas[i].toString()+" ");
             statement.setString(i+1, cosasBonitas[i].toString() );
-            int rowsInserted=statement.executeUpdate();
-        }
 
+        }
+        statement.executeUpdate();
+        int a=0;
         }catch (Exception e){}
         /*
         statement.set
