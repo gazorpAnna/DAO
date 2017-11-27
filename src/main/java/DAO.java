@@ -1,7 +1,11 @@
+import com.mysql.jdbc.Statement;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.text.Format;
 
 public abstract class DAO {
@@ -30,10 +34,11 @@ public abstract class DAO {
     }
 
     public void insert() throws InvocationTargetException, IllegalAccessException {
-        //String query = getInsert();
-        //Connection c = getConnection();
-        //statement
-        //c.prepareStatement(query);
+        try{
+            String query = getInsert();
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba","root", "dsa.upc");
+            PreparedStatement statement=c.prepareStatement(query);
+
         Method[] metodos=this.getClass().getMethods();
         Object[] cosasBonitas = new Object[atributos.length];
         for (int i=0;i<atributos.length;i++)
@@ -53,9 +58,12 @@ public abstract class DAO {
             int abc=j;
             cosasBonitas[i]= metodos[j].invoke(this,null);//INVOKE ES LA CLAVE
 
-            System.out.println(cosasBonitas[i].toString()+" ");
-            //statement.setString(i+1, metodos[j] );
+            //System.out.println(cosasBonitas[i].toString()+" ");
+            statement.setString(i+1, cosasBonitas[i].toString() );
+            int rowsInserted=statement.executeUpdate();
         }
+
+        }catch (Exception e){}
         /*
         statement.set
         statement.setString(1, "bill");

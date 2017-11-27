@@ -43,7 +43,7 @@ public class Track extends DAO {
 
 
         Pepita t1=new Pepita(1,"ciao",false,1.3);
-        t1.getInsert();
+        t1.insert();
         Object[] a = null;
         t1.update("co",a) ;
         t1.insert();
