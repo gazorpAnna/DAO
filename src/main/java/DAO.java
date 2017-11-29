@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.text.Format;
 
 public abstract class DAO {
@@ -59,20 +60,17 @@ public abstract class DAO {
             cosasBonitas[i]= metodos[j].invoke(this,null);//INVOKE ES LA CLAVE
 
             //System.out.println(cosasBonitas[i].toString()+" ");
-            statement.setString(i+1, cosasBonitas[i].toString() );
+            statement.setObject(i+1, cosasBonitas[i] );
 
         }
         statement.executeUpdate();
         int a=0;
-        }catch (Exception e){}
-        /*
-        statement.set
-        statement.setString(1, "bill");
-        statement.setString(2, "secretpass");
-        statement.setString(3, "Bill Gates");
+        statement.close();
+        c.close();
+        }catch (Exception e){
+            int a=0;
+        }
 
-
-        int rowsInserted = statement.executeUpdate();*/
     }
 
     /*public Connection getConnection(){
@@ -80,17 +78,43 @@ public abstract class DAO {
     }*/
 
     // SELECT * FROM Track WHERE id=?
-    public void select(String[] datos){
-        StringBuffer sb = new StringBuffer("SELECT ");
-        for (String f:datos)
-        {
-            sb.append(f).append(",");
+    public void select(String[] datos,String[] id,Object[] obj){
+        try {
+            StringBuffer sb = new StringBuffer("SELECT ");
+            for (String f : datos) {
+                sb.append(f).append(",");
+
+            }
+            sb.delete(sb.length() - 1, sb.length());
+            sb.append(" FROM ");
+            sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length())).append(" ("); //Track
+            //sb.append(this.getClass().getSimpleName());
+            //sb.append(bdname);
+            sb.append(" WHERE ");
+            for(String a:id){
+                sb.append(a).append("=?").append(" && ");
+            }
+            sb.delete(sb.length()-4,sb.length());
+            String query = sb.toString();
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba", "root", "dsa.upc");
+            PreparedStatement statement = c.prepareStatement(query);
+            for(int i=0;i<obj.length;i++){
+                statement.setObject(i+1,obj[i]);
+            }
+            ResultSet abc=statement.executeQuery();
+            while(abc.next()) {
+                System.out.println();
+            }
+            int a=0;
+            statement.close();
+            c.close();
+
+        }catch (Exception e){
 
         }
-        sb.delete(sb.length()-1,sb.length());
-        sb.append(" FROM ");
-        sb.append(this.getClass().getSimpleName());
-        //sb.append(bdname);
+
+
+
     }
 
     // UPDATE Track SET name=?, desc=? WHERE id=?
