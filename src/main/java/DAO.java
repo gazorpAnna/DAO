@@ -1,18 +1,22 @@
 import com.mysql.jdbc.Statement;
+import jdk.nashorn.internal.runtime.ECMAException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.Format;
+import java.util.ArrayList;
 
 public abstract class DAO {
 
     //Field[]
     Field[] atributos;
+    String user="root",pass="dsa.upc",url="jdbc:mysql://localhost:3306/prueba";
     
     //INSERT INTO Track (id, name, desc) VALUES (?, ?, ?)
     public String getInsert() throws Exception{
@@ -37,7 +41,7 @@ public abstract class DAO {
     public void insert() throws InvocationTargetException, IllegalAccessException {
         try{
             String query = getInsert();
-            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba","root", "dsa.upc");
+            Connection c = DriverManager.getConnection(url,user,pass);
             PreparedStatement statement=c.prepareStatement(query);
 
         Method[] metodos=this.getClass().getMethods();
@@ -78,72 +82,199 @@ public abstract class DAO {
     }*/
 
     // SELECT * FROM Track WHERE id=?
-    public void select(String[] datos,String[] id,Object[] obj){
+    public ArrayList<Object[]> select(/*String[] datos,String[] id,Object[] obj*/){
+        ArrayList<Object[]> resultado=null;
         try {
-            StringBuffer sb = new StringBuffer("SELECT ");
+            StringBuffer sb = new StringBuffer("SELECT * FROM ");
+            /*
             for (String f : datos) {
                 sb.append(f).append(",");
 
             }
             sb.delete(sb.length() - 1, sb.length());
             sb.append(" FROM ");
-            sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length())).append(" ("); //Track
+            */
+            sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length())); //Track
             //sb.append(this.getClass().getSimpleName());
             //sb.append(bdname);
             sb.append(" WHERE ");
+            atributos=getClass().getDeclaredFields();
+            String metodo="";
+            for(Field f:atributos){
+                if(Modifier.isFinal(f.getModifiers())){
+                    sb.append(f.getName()).append("=?");
+                    metodo="get"+f.getName().substring(0,1).toUpperCase()+f.getName().substring(1,f.getName().length());
+                }
+            }
+            /*
             for(String a:id){
                 sb.append(a).append("=?").append(" && ");
             }
             sb.delete(sb.length()-4,sb.length());
+            */
             String query = sb.toString();
-            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba", "root", "dsa.upc");
+            Connection c = DriverManager.getConnection(url,user,pass);
             PreparedStatement statement = c.prepareStatement(query);
+            Method[] metodos=getClass().getMethods();
+            for(Method m:metodos){
+                if(m.toString().contains(metodo)){
+                    statement.setObject(1,m.invoke(this,null));
+                    break;
+                }
+            }
+            /*
             for(int i=0;i<obj.length;i++){
                 statement.setObject(i+1,obj[i]);
             }
-            ResultSet abc=statement.executeQuery();
-            while(abc.next()) {
-                System.out.println();
+            */
+            ResultSet rs=statement.executeQuery();
+            resultado=new ArrayList<Object[]>();
+            //String frase="";
+            while(rs.next()) {
+                Object[] fila=new Object[atributos.length];
+                for(int i=0;i<atributos.length;i++){
+                    fila[i]=rs.getObject(atributos[i].getName());
+                    //frase=frase+rs.getObject(datos[i]).toString()+" ";
+                }
+                //frase=frase+"\n";
+                resultado.add(fila);
             }
-            int a=0;
+            //System.out.println(frase);
             statement.close();
             c.close();
 
         }catch (Exception e){
 
         }
-
+        return resultado;
 
 
     }
 
     // UPDATE Track SET name=?, desc=? WHERE id=?
-    public void update(String idString, Object[] parametros){
-        StringBuffer sb = new StringBuffer("UPDATE ");
-        sb.append(this.getClass().getSimpleName()).append(" SET ");
-        atributos = this.getClass().getFields();
-        for (Field f: atributos)
-        {
-            if( f.getName() != idString)
-                sb.append(f.getName()).append("=?,");
+
+    public void update(){
+        StringBuffer sb=new StringBuffer("UPDATE ");
+        sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length()));
+        sb.append(" SET ");
+        atributos=this.getClass().getDeclaredFields();
+        Field ident=atributos[0];//Se queja por no estar inicializado
+        for (Field f:atributos) {
+            if(!Modifier.isFinal(f.getModifiers())) {
+                sb.append(f.getName()).append("=?, ");
+            }else{ident=f;}
         }
-        sb.delete(sb.length()-1,sb.length());
+        sb.delete(sb.length()-2,sb.length());
         sb.append(" WHERE ");
-        sb.append(idString).append("=?");
-        System.out.println(sb);
-        /*reparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, parametros);
-        statement.setString(2, );
-        statement.setString(3, "bill.gates@microsoft.com");
-        statement.setString(4, "bill");
-        */
+        sb.append(ident.getName()).append("=?");
+        try{
+            String query=sb.toString();
+            Connection c=DriverManager.getConnection(url,user,pass);
+            PreparedStatement statement=c.prepareStatement(query);
+            int i=1;
+            Method[] metodos=getClass().getMethods();
+            for(Field f:atributos){
+
+                int j;
+                String metodo="get"+f.getName().substring(0,1).toUpperCase()+f.getName().substring(1,f.getName().length());
+                for(j=0;j<metodos.length;j++){
+                    if(metodos[j].toString().contains(metodo))
+                    {
+                        break;
+                    }
+
+                }
+                statement.setObject(i,metodos[j].invoke(this,null));
+                i++;
+
+                if(!Modifier.isFinal(f.getModifiers())) {
+                    statement.setObject(i,metodos[j].invoke(this,null));
+                    i++;
+                }else{
+                    statement.setObject(atributos.length,metodos[j].invoke(this,null));
+                }
+            }
+            statement.executeUpdate();
+            statement.close();
+            c.close();
+
+        }catch (Exception e){}
 
     }
+    /*
+    public void update(String[] parametros,Object[] nuevos,String[] cond1,Object[] cond2){
+        StringBuffer sb = new StringBuffer("UPDATE ");
+        sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length()));
+        //sb.append(this.getClass().getSimpleName()).append(" SET ");
+        sb.append(" SET ");
+        for(String s:parametros){
+            sb.append(s+"=?, ");
+        }
+        sb.delete(sb.length()-2,sb.length());
+        sb.append(" WHERE ");
+        for (String s : cond1) {
+            sb.append(s+"=?").append(" && ");
+        }
+        sb.delete(sb.length()-4,sb.length());
+
+        try{
+            String query=sb.toString();
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba", "root", "dsa.upc");
+            PreparedStatement statement = c.prepareStatement(query);
+            for(int i=0;i<(nuevos.length + cond2.length);i++){
+                if(i<nuevos.length) {
+                    statement.setObject(i+1,nuevos[i]);
+                }else{
+                    statement.setObject((i+1),cond2[i-nuevos.length]);
+                }
+            }
+            statement.executeUpdate();
+            statement.close();
+            c.close();
+
+        }catch (Exception e){}
+
+    }
+    */
+
+
 
     // DELETE FROM Track WHERE id=?
-    public void delete(){
+    public void delete(String cond1,Object cond2){
         StringBuffer sb = new StringBuffer("DELETE FROM ");
-        sb.append(this.getClass().getSimpleName()).append(" WHERE ");
+        sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length()));
+        //sb.append(this.getClass().getSimpleName());
+        sb.append(" WHERE ");
+        atributos=getClass().getDeclaredFields();
+        String metodo="";
+        for(Field f:atributos){
+            if(Modifier.isFinal(f.getModifiers())){
+                sb.append(f.getName()).append("=?");
+                metodo="get"+f.getName().substring(0,1).toUpperCase()+f.getName().substring(1,f.getName().length());
+                break;
+            }
+        }
+        //sb.append(cond1+"=?");
+        String query=sb.toString();
+        try{
+            Connection c=DriverManager.getConnection(url, user,pass);
+            PreparedStatement statement=c.prepareStatement(query);
+            Method[] metodos=getClass().getMethods();
+            for(Method m:metodos){
+                if(m.toString().contains(metodo))
+                {
+                    statement.setObject(1,m.invoke(this,null));
+                    break;
+                }
+            }
+            //statement.setObject(1,cond2);
+            statement.executeUpdate();
+            statement.close();
+            c.close();
+
+        }catch(Exception e){
+
+        }
 
     }
 
