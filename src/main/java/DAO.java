@@ -77,23 +77,13 @@ public abstract class DAO {
 
     }
 
-    /*public Connection getConnection(){
-        return
-    }*/
+
 
     // SELECT * FROM Track WHERE id=?
     public ArrayList<Object[]> select(/*String[] datos,String[] id,Object[] obj*/){
         ArrayList<Object[]> resultado=null;
         try {
             StringBuffer sb = new StringBuffer("SELECT * FROM ");
-            /*
-            for (String f : datos) {
-                sb.append(f).append(",");
-
-            }
-            sb.delete(sb.length() - 1, sb.length());
-            sb.append(" FROM ");
-            */
             sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length())); //Track
             //sb.append(this.getClass().getSimpleName());
             //sb.append(bdname);
@@ -104,14 +94,10 @@ public abstract class DAO {
                 if(Modifier.isFinal(f.getModifiers())){
                     sb.append(f.getName()).append("=?");
                     metodo="get"+f.getName().substring(0,1).toUpperCase()+f.getName().substring(1,f.getName().length());
+                    break;
                 }
             }
-            /*
-            for(String a:id){
-                sb.append(a).append("=?").append(" && ");
-            }
-            sb.delete(sb.length()-4,sb.length());
-            */
+
             String query = sb.toString();
             Connection c = DriverManager.getConnection(url,user,pass);
             PreparedStatement statement = c.prepareStatement(query);
@@ -122,11 +108,7 @@ public abstract class DAO {
                     break;
                 }
             }
-            /*
-            for(int i=0;i<obj.length;i++){
-                statement.setObject(i+1,obj[i]);
-            }
-            */
+
             ResultSet rs=statement.executeQuery();
             resultado=new ArrayList<Object[]>();
             //String frase="";
@@ -184,8 +166,7 @@ public abstract class DAO {
                     }
 
                 }
-                statement.setObject(i,metodos[j].invoke(this,null));
-                i++;
+
 
                 if(!Modifier.isFinal(f.getModifiers())) {
                     statement.setObject(i,metodos[j].invoke(this,null));
@@ -201,46 +182,11 @@ public abstract class DAO {
         }catch (Exception e){}
 
     }
-    /*
-    public void update(String[] parametros,Object[] nuevos,String[] cond1,Object[] cond2){
-        StringBuffer sb = new StringBuffer("UPDATE ");
-        sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length()));
-        //sb.append(this.getClass().getSimpleName()).append(" SET ");
-        sb.append(" SET ");
-        for(String s:parametros){
-            sb.append(s+"=?, ");
-        }
-        sb.delete(sb.length()-2,sb.length());
-        sb.append(" WHERE ");
-        for (String s : cond1) {
-            sb.append(s+"=?").append(" && ");
-        }
-        sb.delete(sb.length()-4,sb.length());
-
-        try{
-            String query=sb.toString();
-            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba", "root", "dsa.upc");
-            PreparedStatement statement = c.prepareStatement(query);
-            for(int i=0;i<(nuevos.length + cond2.length);i++){
-                if(i<nuevos.length) {
-                    statement.setObject(i+1,nuevos[i]);
-                }else{
-                    statement.setObject((i+1),cond2[i-nuevos.length]);
-                }
-            }
-            statement.executeUpdate();
-            statement.close();
-            c.close();
-
-        }catch (Exception e){}
-
-    }
-    */
 
 
 
     // DELETE FROM Track WHERE id=?
-    public void delete(String cond1,Object cond2){
+    public void delete(){
         StringBuffer sb = new StringBuffer("DELETE FROM ");
         sb.append(this.getClass().getSimpleName().substring(0, 1).toLowerCase() + this.getClass().getSimpleName().substring(1, this.getClass().getSimpleName().length()));
         //sb.append(this.getClass().getSimpleName());

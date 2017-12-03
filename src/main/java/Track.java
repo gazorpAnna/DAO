@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Track extends DAO {
-    public int id;
+    public final int id;
     public String name, description;
 
     public Track(){
@@ -28,10 +28,6 @@ public class Track extends DAO {
         return description;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -45,7 +41,7 @@ public class Track extends DAO {
 
         //Track t2=new Track(2,"budy-holy","abcd");
         //t2.insert();
-        Pepita t1=new Pepita(2,"hello",false,0);
+
         //t1.insert();
 
         /*
@@ -61,26 +57,20 @@ public class Track extends DAO {
         ArrayList<Object[]> resultado=t1.select(cosas,id,obj);
         int a=0;
         */
-
-        //Parametros que quiero cambiar
-        String[] parametros=new String[2];
-        parametros[0]="numeroTal";
-        parametros[1]="co";
-        //nuevos datos que quiero en esos parametros
-        Object[] nuevos=new Object[2];
-        nuevos[0]=3;
-        nuevos[1]="mamarracho";
-
-        //Condiciones para que cambie de toda la tabla las lineas que yo quiera
-        //columnas que quiero que mire para la condicion
-        String[] cond1=new String[2];
-        cond1[0]="numeroTal";
-        cond1[1]="co";
-        //valores que quiero que tengan esas columnas para la condicion
-        Object[] cond2=new Object[2];
-        cond2[0]=2;
-        cond2[1]="hello";
-        t1.update(parametros,nuevos,cond1,cond2);
+        Pepita t1=new Pepita(2,"hello",false,0);
+        t1.insert();
+        ArrayList<Object[]> datos1=t1.select();
+        t1=new Pepita(2,"ciao",false,0);
+        t1.insert();
+        ArrayList<Object[]> datos2=t1.select();
+        t1.setNumeroTal(3);
+        t1.setPop(true);
+        t1.setTre(0.25);
+        t1.update();
+        ArrayList<Object[]> datos3=t1.select();
+        t1.delete();
+        ArrayList<Object[]> datos4=t1.select();
+        int a=0;
 
         //Object[] a = null;
         //t1.update("co",a) ;

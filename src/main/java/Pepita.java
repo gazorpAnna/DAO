@@ -1,6 +1,6 @@
 public class Pepita extends DAO {
     public int numeroTal;
-    public String co;
+    public final String co;
     public boolean pop;
     public double tre;
 
@@ -31,9 +31,6 @@ public class Pepita extends DAO {
         this.numeroTal = numeroTal;
     }
 
-    public void setCo(String co) {
-        this.co = co;
-    }
 
     public void setPop(boolean pop) {
         this.pop = pop;
