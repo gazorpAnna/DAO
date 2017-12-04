@@ -22,7 +22,7 @@ public abstract class DAO {
     public String getInsert() throws Exception{
         StringBuffer sb = new StringBuffer("INSERT INTO ");
         sb.append(this.getClass().getSimpleName().substring(0,1).toLowerCase()+this.getClass().getSimpleName().substring(1,this.getClass().getSimpleName().length())).append(" ("); //Track
-        atributos = this.getClass().getFields();
+        atributos = this.getClass().getDeclaredFields();
         for (Field f:atributos) {
             sb.append(f.getName()).append(",");
         }
